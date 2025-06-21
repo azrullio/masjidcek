@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Website Masjid</title>
+  <link href="css/style.css" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://unpkg.com/aos@next/dist/aos.css" rel="stylesheet" />
+
+
+
+  
+</head>
+<body class="index">
+
+<nav>
+  <div class="nav-container">
+    <div class="nav-brand">Masjid Baitul Taibin</div>
+    <button class="hamburger" onclick="toggleMenu()">☰</button>
+    <ul id="nav-menu">
+      <li><a href="#" onclick="navigateTo('home.html'); return false;">Home</a></li>
+      <li><a href="#" onclick="navigateTo('profil.html'); return false;">Profil Masjid</a></li>
+      <li><a href="#" onclick="navigateTo('dokumentasi.html'); return false;">Dokumentasi</a></li>
+      <li><a href="#" onclick="navigateTo('acara.html'); return false;">Acara</a></li>
+      <li><a href="#" onclick="navigateTo('kontak.html'); return false;">Kontak</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+  <main id="main-content" class="fade-transition fade-show"></main>
+
+    <!-- Konten utama akan dimuat di sini -->
+  </main>
+
+  <script>
+    function setBodyClass(page) {
+      if (page === 'home.html') {
+        document.body.className = 'index';
+      } else if (page === 'profil.html') {
+        document.body.className = 'profil';
+      } else if (page === 'kontak.html') {
+        document.body.className = 'kontak';
+      } else if (page === 'dokumentasi.html') {
+        document.body.className = 'dokumentasi';
+      } else if (page === 'acara.html') {
+        document.body.className = 'acara';
+      } else {
+        document.body.className = '';
+      }
+    }
+
+    function loadPage(page, push = true) {
+      fetch(page)
+        .then(response => {
+          if (!response.ok) throw new Error("Page not found");
+          return response.text();
+        })
+        .then(html => {
+          document.getElementById('main-content').innerHTML = html;
+          setBodyClass(page);
+          if (push) history.pushState({ page }, '', '#' + page);
+        })
+        .catch(() => {
+          document.getElementById('main-content').innerHTML = "<p>Halaman tidak ditemukan.</p>";
+        });
+    }
+
+    function navigateTo(page) {
+      loadPage(page);
+      document.getElementById('nav-menu').classList.remove('show'); // Tutup menu setelah klik
+    }
+
+    // Handle back/forward
+    window.onpopstate = function (event) {
+      const page = event.state?.page || 'home.html';
+      loadPage(page, false);
+    };
+
+    // Load default or current hash
+    window.addEventListener('DOMContentLoaded', () => {
+      const pageFromHash = location.hash.replace('#', '') || 'home.html';
+      loadPage(pageFromHash, false);
+    });
+      function toggleMenu() {
+    const menu = document.getElementById('nav-menu');
+    menu.classList.toggle('show');
+  }
+  function loadPage(page, push = true) {
+  const main = document.getElementById('main-content');
+
+  // Tambahkan animasi keluar (hilang dulu)
+  main.classList.remove('fade-show');
+  main.classList.add('fade-transition');
+
+  setTimeout(() => {
+    fetch(page)
+      .then(response => {
+        if (!response.ok) throw new Error("Page not found");
+        return response.text();
+      })
+      .then(html => {
+        main.innerHTML = html;
+        setBodyClass(page);
+        if (push) history.pushState({ page }, '', '#' + page);
+
+        // Tambahkan animasi masuk setelah isi halaman baru masuk
+        requestAnimationFrame(() => {
+          main.classList.add('fade-show');
+        });
+      })
+      .catch(() => {
+        main.innerHTML = "<p>Halaman tidak ditemukan.</p>";
+      });
+  }, 150); // jeda kecil agar terlihat halus
+}
+
+  </script>
+<script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+<script>
+  AOS.init({
+    duration: 800,      // durasi animasi dalam ms
+    once: true,         // animasi hanya muncul sekali
+    easing: 'ease-in-out' // gerakan halus
+  });
+</script>
+
+</body>
+</html>
